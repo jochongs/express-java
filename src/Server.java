@@ -70,6 +70,7 @@ public class Server {
             while (bufferedReader.ready()) {
                 bodyBuilder.append((char) bufferedReader.read());
             }
+            System.out.println();
             System.out.println(bodyBuilder);
 
             return "";
