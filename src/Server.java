@@ -17,8 +17,6 @@ public class Server {
                 // Input Process
                 String inputStr = readOutputStream(socket);
 
-                System.out.println(inputStr);
-
                 // Output Process
                 send(socket, "HTTP/1.1 200 OK\r\n" +
                         "Content-Type: text/plain\r\n" +
@@ -53,19 +51,28 @@ public class Server {
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
 
+            // Method Line
             String methodLine = bufferedReader.readLine();
             System.out.println(methodLine);
 
-            String headerLines = bufferedReader.readLine();
+            // Header Line
+            String headerLines = "";
             String line = bufferedReader.readLine();
             while(!line.isEmpty()) {
                 headerLines = headerLines + line + "\n";
                 line = bufferedReader.readLine();
             }
+            headerLines = headerLines.substring(0, headerLines.length() - 1);
+            System.out.println(headerLines);
 
-            bufferedReader.readLine();
+            // Body Line
+            StringBuilder bodyBuilder = new StringBuilder();
+            while (bufferedReader.ready()) {
+                bodyBuilder.append((char) bufferedReader.read());
+            }
+            System.out.println(bodyBuilder);
 
-            return headerLines.substring(0, headerLines.length() - 1);
+            return "";
         } catch(IOException exception) {
             exception.printStackTrace();
         }
