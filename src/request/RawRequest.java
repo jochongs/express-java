@@ -1,9 +1,9 @@
 package request;
 
 public class RawRequest {
-    String rawMethod = "";
-    String rawHeader = "";
-    String rawBody = "";
+    String rawMethod;
+    String rawHeader;
+    String rawBody;
 
     public RawRequest(
             String rawMethod,
