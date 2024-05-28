@@ -1,3 +1,5 @@
+import request.RawRequest;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,7 +17,9 @@ public class Server {
                 Socket socket = serverSocket.accept();
 
                 // Input Process
-                String inputStr = readOutputStream(socket);
+                RawRequest request = readOutputStream(socket);
+
+                System.out.println(request);
 
                 // Output Process
                 send(socket, "HTTP/1.1 200 OK\r\n" +
@@ -45,7 +49,7 @@ public class Server {
         }
     }
 
-    private String readOutputStream(Socket socket) {
+    private RawRequest readOutputStream(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -53,7 +57,6 @@ public class Server {
 
             // Method Line
             String methodLine = bufferedReader.readLine();
-            System.out.println(methodLine);
 
             // Header Line
             String headerLines = "";
@@ -63,22 +66,23 @@ public class Server {
                 line = bufferedReader.readLine();
             }
             headerLines = headerLines.substring(0, headerLines.length() - 1);
-            System.out.println(headerLines);
 
             // Body Line
             StringBuilder bodyBuilder = new StringBuilder();
             while (bufferedReader.ready()) {
                 bodyBuilder.append((char) bufferedReader.read());
             }
-            System.out.println();
-            System.out.println(bodyBuilder);
 
-            return "";
+            return new RawRequest(
+                    methodLine,
+                    headerLines,
+                    bodyBuilder.toString()
+            );
         } catch(IOException exception) {
             exception.printStackTrace();
-        }
 
-        return "";
+            return null;
+        }
     }
 
     private void initSocket(int port) {

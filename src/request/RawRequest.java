@@ -5,7 +5,7 @@ public class RawRequest {
     String rawHeader = "";
     String rawBody = "";
 
-    RawRequest(
+    public RawRequest(
             String rawMethod,
             String rawHeader,
             String rawBody
@@ -13,5 +13,17 @@ public class RawRequest {
         this.rawMethod = rawMethod;
         this.rawHeader = rawHeader;
         this.rawBody = rawBody;
+    }
+
+    @Override
+    public String toString() {
+        if (rawBody.isEmpty()) {
+            return rawMethod + '\n' +
+                    rawHeader;
+        }
+
+        return rawMethod + '\n' +
+                rawHeader + "\n\n" +
+                rawBody;
     }
 }
