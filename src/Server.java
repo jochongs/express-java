@@ -1,4 +1,6 @@
 import request.RawRequest;
+import request.Request;
+import request.RequestHeader;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -17,9 +19,9 @@ public class Server {
                 Socket socket = serverSocket.accept();
 
                 // Input Process
-                RawRequest request = readOutputStream(socket);
-
-                System.out.println(request);
+                RawRequest rawRequest = createRequest(socket);
+                System.out.println(rawRequest);
+                RequestHeader requestHeader = new RequestHeader(rawRequest);
 
                 // Output Process
                 send(socket, "HTTP/1.1 200 OK\r\n" +
@@ -49,7 +51,7 @@ public class Server {
         }
     }
 
-    private RawRequest readOutputStream(Socket socket) {
+    private RawRequest createRequest(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -61,11 +63,13 @@ public class Server {
             // Header Line
             String headerLines = "";
             String line = bufferedReader.readLine();
-            while(!line.isEmpty()) {
-                headerLines = headerLines + line + "\n";
-                line = bufferedReader.readLine();
+            if (line != null) {
+                while(!line.isEmpty()) {
+                    headerLines = headerLines + line + "\n";
+                    line = bufferedReader.readLine();
+                }
+                headerLines = headerLines.substring(0, headerLines.length() - 1);
             }
-            headerLines = headerLines.substring(0, headerLines.length() - 1);
 
             // Body Line
             StringBuilder bodyBuilder = new StringBuilder();
