@@ -26,7 +26,6 @@ public class Server {
 
                 Request request = createRequest(socket);
                 Response response = new Response(socket);
-                System.out.println(request);
 
                 if (request == null) {
                     response.send("No content");
@@ -86,6 +85,7 @@ public class Server {
 
         if (!routers.containsKey(method)) {
             router = new Router();
+            routers.put(method, router);
         } else {
             router = routers.get(method);
         }
