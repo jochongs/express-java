@@ -6,9 +6,11 @@ import request.Request;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class Server {
     private ServerSocket serverSocket;
+    private HashMap<HttpMethod, Router> routers;
 
     public void listen(int port) {
         initSocket(port);
@@ -41,6 +43,38 @@ public class Server {
                 exception.printStackTrace();
             }
         }
+    }
+
+    public void get(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.GET, path, requestHandler);
+    }
+
+    public void post(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.POST, path, requestHandler);
+    }
+
+    public void put(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.PUT, path, requestHandler);
+    }
+
+    public void delete(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.DELETE, path, requestHandler);
+    }
+
+    public void patch(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.PATCH, path, requestHandler);
+    }
+
+    private void addRoutes(HttpMethod method, String path, RequestHandler requestHandler) {
+        Router router;
+
+        if (!routers.containsKey(method)) {
+            router = new Router();
+        } else {
+            router = routers.get(method);
+        }
+
+        router.addRoute(path, requestHandler);
     }
 
     private void send(Socket socket, String sendStr) {
