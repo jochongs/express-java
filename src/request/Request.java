@@ -1,5 +1,7 @@
 package request;
 
+import java.util.HashMap;
+
 public class Request {
     private final RequestHeader header;
     private final String path;
@@ -8,6 +10,7 @@ public class Request {
     private final String body;
     private final String protocol;
     private final String protocolVersion;
+    private HashMap<String, String> params;
 
     public Request(RawRequest rawRequest) {
         // Header
@@ -37,6 +40,10 @@ public class Request {
 
     public void printHeader() {
         System.out.println(header);
+    }
+
+    public void setParams(HashMap<String, String> params) {
+        this.params = params;
     }
 
     @Override
