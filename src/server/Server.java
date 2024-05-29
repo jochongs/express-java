@@ -1,6 +1,7 @@
+package server;
+
 import request.RawRequest;
 import request.Request;
-import request.RequestHeader;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -9,7 +10,7 @@ import java.net.Socket;
 public class Server {
     private ServerSocket serverSocket;
 
-    void listen(int port) {
+    public void listen(int port) {
         initSocket(port);
 
         while(true) {
@@ -120,3 +121,5 @@ public class Server {
         }
     }
 }
+
+
