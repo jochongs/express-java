@@ -87,4 +87,14 @@ public enum HttpStatus {
     public String getMessage() {
         return message;
     }
+
+    public static HttpStatus fromCode(int code) {
+        for (HttpStatus status : HttpStatus.values()) {
+            if (status.getCode() == code) {
+                return status;
+            }
+        }
+
+        throw new IllegalArgumentException("No matching status code");
+    }
 }

@@ -1,7 +1,18 @@
 package server;
 
 public enum HttpMethod {
-    GET, POST, PUT, DELETE, PATCH, OPTION;
+    GET("GET"),
+    POST("POST"),
+    PUT("PUT"),
+    DELETE("DELETE"),
+    PATCH("PATCH"),
+    OPTION("OPTION");
+
+    private final String method;
+
+    HttpMethod(String method) {
+        this.method = method;
+    }
 
     public static HttpMethod getMethod(String method) {
         if (method.equals("GET")) {
@@ -21,5 +32,9 @@ public enum HttpMethod {
         }
 
         throw new IllegalArgumentException("No matching method");
+    }
+
+    public String getMethod() {
+        return method;
     }
 }

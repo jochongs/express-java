@@ -1,11 +1,13 @@
 package request;
 
+import server.HttpMethod;
+
 import java.util.HashMap;
 
 public class Request {
     private final RequestHeader header;
     private final String path;
-    private final String method;
+    private final HttpMethod method;
     private final String query;
     private final String body;
     private final String protocol;
@@ -21,7 +23,8 @@ public class Request {
 
         // ETC...
         String[] splitMethods = rawRequest.rawMethod.split(" ");
-        method = splitMethods[0];
+
+        method = HttpMethod.getMethod(splitMethods[0]);
 
         String pullPath = splitMethods[1];
 
@@ -51,5 +54,37 @@ public class Request {
         return method + " " + path + "?" + query + " " + protocol + '/' + protocolVersion + '\n' +
                 header.toString() + '\n' +
                 body;
+    }
+
+    public RequestHeader header() {
+        return header;
+    }
+
+    public String path() {
+        return path;
+    }
+
+    public HttpMethod method() {
+        return method;
+    }
+
+    public String query() {
+        return query;
+    }
+
+    public String body() {
+        return body;
+    }
+
+    public String protocol() {
+        return protocol;
+    }
+
+    public String protocolVersion() {
+        return protocolVersion;
+    }
+
+    public HashMap<String, String> params() {
+        return params;
     }
 }

@@ -2,6 +2,7 @@ package server;
 
 import request.RawRequest;
 import request.Request;
+import response.Response;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -10,32 +11,39 @@ import java.util.HashMap;
 
 public class Server {
     private ServerSocket serverSocket;
-    private HashMap<HttpMethod, Router> routers;
+    private final HashMap<HttpMethod, Router> routers;
+
+    public Server() {
+        routers = new HashMap<>();
+    }
 
     public void listen(int port) {
         initSocket(port);
 
         while(true) {
             try {
-                // Waiting for connecting
-                System.out.println("==================================");
                 Socket socket = serverSocket.accept();
 
-                // Input Process
                 Request request = createRequest(socket);
+                Response response = new Response(socket);
+                System.out.println(request);
 
                 if (request == null) {
-                    send(socket, "HTTP/1.1 200 OK");
+                    response.send("No content");
+                    continue;
+                }
+                if (request.method() == null) {
+                    response.send("No content");
                     continue;
                 }
 
-                System.out.println(request);
+                Router router = getRouter(request.method());
 
-                // Output Process
-                send(socket, "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/plain\r\n" +
-                        "\r\n" +
-                        "Hello, World!");
+                try {
+                    router.handleRequest(request.path(), request, response);
+                } catch(PathNotFoundException exception) {
+                    response.status(404).send("Cannot find path");
+                }
 
                 // Close the socket
                 socket.close();
@@ -43,6 +51,14 @@ public class Server {
                 exception.printStackTrace();
             }
         }
+    }
+
+    private Router getRouter(HttpMethod httpMethod) {
+        if (!routers.containsKey(httpMethod)) {
+            routers.put(httpMethod, new Router());
+        }
+
+        return routers.get(httpMethod);
     }
 
     public void get(String path, RequestHandler requestHandler) {
@@ -77,20 +93,6 @@ public class Server {
         router.addRoute(path, requestHandler);
     }
 
-    private void send(Socket socket, String sendStr) {
-        try {
-            OutputStream outputStream = socket.getOutputStream();
-
-            byte[] bytes = sendStr.getBytes("UTF-8");
-
-            outputStream.write(bytes);
-            outputStream.flush();
-        } catch(IOException exception) {
-            exception.printStackTrace();
-            System.out.println("Fail to send");
-        }
-    }
-
     private Request createRequest(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
@@ -99,6 +101,14 @@ public class Server {
 
             // Method Line
             String methodLine = bufferedReader.readLine();
+
+            if (methodLine == null) {
+                return null;
+            }
+
+            if (methodLine.isEmpty()) {
+                return null;
+            }
 
             // Header Line
             String headerLines = "";

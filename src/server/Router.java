@@ -21,12 +21,12 @@ class Router {
         String[] parts = path.split("/");
         TrieNode currNode = root;
 
-        for (String part : parts) {
-            if (part.isEmpty()) {
-                continue;
-            }
+            for (String part : parts) {
+                if (part.isEmpty()) {
+                    continue;
+                }
 
-            String key = part.startsWith(":") ? ":" : part;
+                String key = part.startsWith(":") ? ":" : part;
 
             currNode.children.putIfAbsent(key, new TrieNode());
             currNode = currNode.children.get(key);
@@ -60,6 +60,10 @@ class Router {
                 continue;
             }
 
+            throw new PathNotFoundException("Cannot find path");
+        }
+
+        if (currNode.requestHandler == null) {
             throw new PathNotFoundException("Cannot find path");
         }
 
