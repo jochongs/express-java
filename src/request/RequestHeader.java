@@ -55,28 +55,42 @@ public class RequestHeader {
 
             if (key.equals("Host")) {
                 this.host = value;
-                break;
+                continue;
             }
 
             if (key.equals("User-Agent")) {
                 this.userAgent = value;
-                break;
+                continue;
             }
 
             if (key.equals("Accept")) {
                 this.accept = value;
-                break;
+                continue;
             }
 
             if (key.equals("Content-Type")) {
                 this.contentType = value;
-                break;
+                continue;
             }
 
             if (key.equals("Content-Length")) {
                 this.contentLength = value;
-                break;
+                continue;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "RequestHeader{" + '\n' +
+                 "\t" + "authorization=" + authorization + "," + '\n' +
+                 "\t" + "cookie=" + cookie + "," + '\n' +
+                 "\t" + "host=" + host + "," + '\n' +
+                 "\t" + "origin=" + origin + "," + '\n' +
+                 "\t" + "contentType=" + contentType + "," + '\n' +
+                 "\t" + "contentLength=" + contentLength + "," + '\n' +
+                 "\t" + "userAgent=" + userAgent + "," + '\n' +
+                 "\t" + "accept=" + accept + '\n' +
+                '}';
     }
 }

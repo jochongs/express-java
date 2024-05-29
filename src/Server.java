@@ -19,9 +19,14 @@ public class Server {
                 Socket socket = serverSocket.accept();
 
                 // Input Process
-                RawRequest rawRequest = createRequest(socket);
-                System.out.println(rawRequest);
-                RequestHeader requestHeader = new RequestHeader(rawRequest);
+                Request request = createRequest(socket);
+
+                if (request == null) {
+                    send(socket, "HTTP/1.1 200 OK");
+                    continue;
+                }
+
+                System.out.println(request);
 
                 // Output Process
                 send(socket, "HTTP/1.1 200 OK\r\n" +
@@ -51,7 +56,7 @@ public class Server {
         }
     }
 
-    private RawRequest createRequest(Socket socket) {
+    private Request createRequest(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -77,10 +82,12 @@ public class Server {
                 bodyBuilder.append((char) bufferedReader.read());
             }
 
-            return new RawRequest(
-                    methodLine,
-                    headerLines,
-                    bodyBuilder.toString()
+            return new Request(
+                    new RawRequest(
+                            methodLine,
+                            headerLines,
+                            bodyBuilder.toString()
+                    )
             );
         } catch(IOException exception) {
             exception.printStackTrace();
