@@ -11,7 +11,7 @@ class PathNotFoundException extends Exception {
 }
 
 class Router {
-    private final TrieNode root;
+    public final TrieNode root;
 
     Router() {
         root = new TrieNode();
@@ -21,23 +21,26 @@ class Router {
         String[] parts = path.split("/");
         TrieNode currNode = root;
 
-            for (String part : parts) {
-                if (part.isEmpty()) {
-                    continue;
-                }
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
 
-                String key = part.startsWith(":") ? ":" : part;
+            String key = part.startsWith(":") ? ":" : part;
+
+            if (part.startsWith(":")) {
+                currNode.paramKey = part.substring(1);
+            }
 
             currNode.children.putIfAbsent(key, new TrieNode());
             currNode = currNode.children.get(key);
-            currNode.paramKey = part.substring(1);
         }
 
         currNode.requestHandler = requestHandler;
     }
 
     void handleRequest(String path, Request request, Response response) throws PathNotFoundException {
-        String[] parts = path.split(path);
+        String[] parts = path.split("/");
         HashMap<String, String> params = new HashMap<>();
 
         TrieNode currNode = root;
