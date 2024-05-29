@@ -17,6 +17,10 @@ public class RawRequest {
 
     @Override
     public String toString() {
+        if (rawHeader.isEmpty()) {
+            return "null";
+        }
+
         if (rawBody.isEmpty()) {
             return rawMethod + '\n' +
                     rawHeader;
