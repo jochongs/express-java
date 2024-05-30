@@ -7,14 +7,8 @@ import response.Response;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.regex.Pattern;
-
-class InvalidHttpRequestException extends Exception {
-    InvalidHttpRequestException(String message) {
-        super(message);
-    }
-}
 
 public class Server {
     private ServerSocket serverSocket;
@@ -37,10 +31,7 @@ public class Server {
 
                 if (request == null) {
                     response.send("No content");
-                    continue;
-                }
-                if (request.method() == null) {
-                    response.send("No content");
+                    socket.close();
                     continue;
                 }
 
@@ -54,32 +45,30 @@ public class Server {
 
                 // Close the socket
                 closeSocket(socket);
-            } catch (InvalidHttpRequestException exception) {
-                closeSocket(socket);
             } catch (IOException exception) {
-                exception.printStackTrace();
+                closeSocket(socket);
             }
         }
     }
 
-    public void get(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.GET, path, requestHandler);
+    public void get(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.GET, path, requestHandlers);
     }
 
-    public void post(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.POST, path, requestHandler);
+    public void post(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.POST, path, requestHandlers);
     }
 
-    public void put(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.PUT, path, requestHandler);
+    public void put(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.PUT, path, requestHandlers);
     }
 
-    public void delete(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.DELETE, path, requestHandler);
+    public void delete(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.DELETE, path, requestHandlers);
     }
 
-    public void patch(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.PATCH, path, requestHandler);
+    public void patch(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.PATCH, path, requestHandlers);
     }
 
     private void closeSocket(Socket socket) {
@@ -90,11 +79,12 @@ public class Server {
         int tryCount = 0;
         try {
             while (tryCount < 3) {
-                wait(1000);
                 try {
                     socket.close();
+                    return;
                 } catch (IOException exception) {
                     tryCount++;
+                    Thread.sleep(1000);
                     continue;
                 }
             }
@@ -111,7 +101,7 @@ public class Server {
         return routers.get(httpMethod);
     }
 
-    private void addRoutes(HttpMethod method, String path, RequestHandler requestHandler) {
+    private void addRoutes(HttpMethod method, String path, RequestHandler ...requestHandler) {
         Router router;
 
         if (!routers.containsKey(method)) {
@@ -124,7 +114,7 @@ public class Server {
         router.addRoute(path, requestHandler);
     }
 
-    private Request createRequest(Socket socket) throws InvalidHttpRequestException {
+    private Request createRequest(Socket socket) {
         try {
             InputStream inputStream = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -133,15 +123,15 @@ public class Server {
             // Method Line
             String methodLine = bufferedReader.readLine();
 
-            if (isValidHttpLine(methodLine)) {
-                throw new InvalidHttpRequestException("Invalid Http Request");
+            if (!isValidHttpLine(methodLine)) {
+                return null;
             }
 
             // Header Line
             String headerLines = "";
             String line = bufferedReader.readLine();
             if (line != null) {
-                while(!line.isEmpty()) {
+                while (!line.isEmpty()) {
                     headerLines = headerLines + line + "\n";
                     line = bufferedReader.readLine();
                 }
@@ -161,7 +151,7 @@ public class Server {
                             bodyBuilder.toString()
                     )
             );
-        } catch(IOException exception) {
+        } catch (IOException exception) {
             exception.printStackTrace();
 
             return null;
@@ -169,8 +159,6 @@ public class Server {
     }
 
     private boolean isValidHttpLine(String methodLine) {
-        Pattern METHOD_LINE_PATTERN = Pattern.compile("^(GET|POST|PUT|DELETE|HEAD|OPTIONS|PATCH|TRACE|CONNECT)\\\\s+\\\\S+\\\\s+HTTP/\\\\d\\\\.\\\\d$");
-
         if (methodLine == null) {
             return false;
         }
@@ -179,7 +167,19 @@ public class Server {
             return false;
         }
 
-        return METHOD_LINE_PATTERN.matcher(methodLine).matches();
+        String[] parts = methodLine.split(" ");
+
+        if (parts.length != 3) {
+            return false;
+        }
+
+        String[] methods = new String[]{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTION", "HEAD", "TRACE", "CONNECT"};
+
+        if (!Arrays.stream(methods).toList().contains(parts[0])) {
+            return false;
+        }
+
+        return true;
     }
 
     private void initSocket(int port) {

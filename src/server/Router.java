@@ -2,6 +2,8 @@ package server;
 
 import request.Request;
 import response.Response;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
 class PathNotFoundException extends Exception {
@@ -17,7 +19,7 @@ class Router {
         root = new TrieNode();
     }
 
-    void addRoute(String path, RequestHandler requestHandler) {
+    void addRoute(String path, RequestHandler ...requestHandlers) {
         String[] parts = path.split("/");
         TrieNode currNode = root;
 
@@ -36,7 +38,7 @@ class Router {
             currNode = currNode.children.get(key);
         }
 
-        currNode.requestHandler = requestHandler;
+        currNode.requestHandlers = Arrays.stream(requestHandlers).toList();
     }
 
     void handleRequest(String path, Request request, Response response) throws PathNotFoundException {
@@ -66,12 +68,23 @@ class Router {
             throw new PathNotFoundException("Cannot find path");
         }
 
-        if (currNode.requestHandler == null) {
+        if (currNode.requestHandlers.size() == 0) {
             throw new PathNotFoundException("Cannot find path");
         }
 
         request.setParams(params);
-        currNode.requestHandler.execute(request, response);
+        for (RequestHandler requestHandler : currNode.requestHandlers) {
+            NextHandler nextHandler = new NextHandler();
+
+            requestHandler.execute(request, response, nextHandler);
+
+            if (nextHandler.isCalled()) {
+                continue;
+            }
+
+            break;
+        }
+
+        //currNode.requestHandler.execute(request, response);
     }
 }
-
