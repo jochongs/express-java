@@ -1,4 +1,4 @@
-package response;
+package server.response;
 
 import java.io.IOException;
 import java.io.OutputStream;

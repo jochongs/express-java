@@ -1,15 +1,37 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import server.exception.BadRequestException;
 import server.Server;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+class User {
+    int idx;
+    String name;
+
+    @Override
+    public String toString() {
+        return "idx: " + this.idx + '\n' +
+                "name: " + this.name;
+    }
+}
 
 public class Main {
     public static void main(String[] args) {
         Server server = new Server();
 
         server.use("/user", (req, res, nextHandler) -> {
-            System.out.println("안녕하세요");
+            if (req.header().contentType.equals("application/json")) {
+                System.out.println("try to parsing");
+                ObjectMapper objectMapper = new ObjectMapper();
 
-            if (req.header().contentType == "application/json") {
+                try {
+                    User user = objectMapper.readValue(req.body(), User.class);
+
+                    System.out.println(user);
+                } catch (IOException exception) {
+                    throw new BadRequestException("Cannot parsing json");
+                }
             }
 
             nextHandler.next();
@@ -18,12 +40,6 @@ public class Main {
         server.get("/", (request, response, nextHandler) -> {
             String body = request.body();
             String query = request.query();
-
-            System.out.println("Body");
-            System.out.println(body);
-            System.out.println("Params");
-            System.out.println("query");
-            System.out.println(query);
 
             response.status(201).send("success");
         });

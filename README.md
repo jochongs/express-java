@@ -8,8 +8,8 @@ import server.Server;
 public static void main(String[] args) {
     Server server = new Server();
 
-    server.post("/user", ((request, response, nextHandler) -> {
-        response.status(201).send("signup success");
+    server.post("/user", ((server.request, server.response, nextHandler) -> {
+        server.response.status(201).send("signup success");
     }));
 
     server.listen(80);

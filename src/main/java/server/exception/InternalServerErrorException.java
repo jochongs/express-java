@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class InternalServerErrorException extends HttpException {
     public InternalServerErrorException(String message) {

@@ -1,8 +1,8 @@
 package server;
 
-import exception.HttpException;
-import request.Request;
-import response.Response;
+import server.exception.HttpException;
+import server.request.Request;
+import server.response.Response;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,7 +69,7 @@ class Router {
                 continue;
             }
 
-            // 현재 경로에 global request handler가 있으면
+            // 현재 경로에 global server.request handler가 있으면
             for (RequestHandler requestHandler : currNode.globalRequestHandlers) {
                 NextHandler nextHandler = new NextHandler();
 

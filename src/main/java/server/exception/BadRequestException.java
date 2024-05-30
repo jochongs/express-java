@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class BadRequestException extends HttpException {
     public BadRequestException(String message) {

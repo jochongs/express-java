@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class UnauthorizedException extends HttpException {
     public UnauthorizedException(String message) {

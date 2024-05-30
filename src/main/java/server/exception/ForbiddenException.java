@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class ForbiddenException extends HttpException {
     public ForbiddenException(String message) {

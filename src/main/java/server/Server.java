@@ -1,9 +1,9 @@
 package server;
 
-import exception.HttpException;
-import request.RawRequest;
-import request.Request;
-import response.Response;
+import server.exception.HttpException;
+import server.request.RawRequest;
+import server.request.Request;
+import server.response.Response;
 
 import java.io.*;
 import java.net.ServerSocket;

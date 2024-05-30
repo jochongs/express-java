@@ -1,4 +1,4 @@
-package response;
+package server.response;
 
 public enum HttpStatus {
     // 1xx Informational

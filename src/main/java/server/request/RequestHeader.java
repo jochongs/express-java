@@ -1,10 +1,4 @@
-package request;
-
-import jdk.jfr.ContentType;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+package server.request;
 
 public class RequestHeader {
     public String authorization;

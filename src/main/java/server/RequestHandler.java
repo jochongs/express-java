@@ -1,8 +1,8 @@
 package server;
 
-import exception.HttpException;
-import request.Request;
-import response.Response;
+import server.exception.HttpException;
+import server.request.Request;
+import server.response.Response;
 
 @FunctionalInterface
 public interface RequestHandler {

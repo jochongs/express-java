@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class HttpException extends Exception {
     public int status;

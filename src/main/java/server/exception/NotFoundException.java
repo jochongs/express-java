@@ -1,4 +1,4 @@
-package exception;
+package server.exception;
 
 public class NotFoundException extends HttpException {
     public NotFoundException(String message) {
