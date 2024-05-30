@@ -134,7 +134,7 @@ public class Server {
             String methodLine = bufferedReader.readLine();
 
             if (isValidHttpLine(methodLine)) {
-                throw new InvalidHttpRequest("Invalid Http Request");
+                throw new InvalidHttpRequestException("Invalid Http Request");
             }
 
             // Header Line
