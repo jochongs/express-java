@@ -33,7 +33,7 @@ public class UserRouter {
             res.status(200).send(users.get(userIdx));
         });
 
-        App.server.post("/user", (req, res, next) -> {
+        App.server.post("/user", (req, res, nextHandler) -> {
             User user = User.of(req.body());
             user.idx = lastId;
             users.put(lastId, user);
@@ -41,6 +41,21 @@ public class UserRouter {
             lastId++;
 
             res.status(200).send("sign up success");
+        });
+
+        App.server.put("/user/:idx", (req, res, nextHandler) -> {
+            int userIdx = req.params("idx", ParseIntPipe.class);
+
+            if(!users.containsKey(userIdx)) {
+                throw new NotFoundException("Cannot find user : " + userIdx);
+            }
+
+            User user = User.of(req.body());
+            user.idx = userIdx;
+
+            users.put(userIdx, user);
+
+            res.status(200).send("update success");
         });
     }
 }
