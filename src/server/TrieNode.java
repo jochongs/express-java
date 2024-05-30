@@ -1,11 +1,12 @@
 package server;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 class TrieNode {
     public Map<String, TrieNode> children = new HashMap<>();
-    public List<RequestHandler> requestHandlers;
+    public ArrayList<RequestHandler> requestHandlers = new ArrayList<>();
+    public ArrayList<RequestHandler> globalRequestHandlers = new ArrayList<>();
     String paramKey;
 }

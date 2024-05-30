@@ -18,6 +18,10 @@ public class Server {
 
     public Server() {
         routers = new HashMap<>();
+
+        for (HttpMethod httpMethod : HttpMethod.values()) {
+            routers.put(httpMethod, new Router());
+        }
     }
 
     public void listen(int port) {
@@ -35,9 +39,8 @@ public class Server {
                     continue;
                 }
 
-                Router router = getRouter(request.method());
-
                 try {
+                    Router router = getRouter(request.method());
                     router.handleRequest(request.path(), request, response);
                 } catch (PathNotFoundException exception) {
                     response.status(404).send("Cannot find path");
@@ -60,6 +63,14 @@ public class Server {
 
     public void use(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
+    }
+
+    public void use(String path, RequestHandler... requestHandlers) {
+        for (HttpMethod httpMethod : HttpMethod.values()) {
+            Router router = routers.get(httpMethod);
+
+            router.addGlobalRoute("/", requestHandlers);
+        }
     }
 
     public void get(String path, RequestHandler ...requestHandlers) {

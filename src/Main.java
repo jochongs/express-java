@@ -7,6 +7,12 @@ public class Main {
     public static void main(String[] args) {
         Server server = new Server();
 
+        server.use("/user", (req, res, nextHandler) -> {
+            System.out.println("안녕하세요");
+
+            nextHandler.next();
+        });
+
         server.get("/", (request, response, nextHandler) -> {
             String body = request.body();
             HashMap<String, String> params = request.params();
@@ -30,10 +36,6 @@ public class Main {
             HashMap<String, String> params = request.params();
 
             System.out.println(params);
-
-            if (true) {
-                throw new NotFoundException("Cannot find user");
-            }
 
             //nextHandler.next();
             response.status(200).send("success");

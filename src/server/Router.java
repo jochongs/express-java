@@ -39,7 +39,23 @@ class Router {
             currNode = currNode.children.get(key);
         }
 
-        currNode.requestHandlers = Arrays.stream(requestHandlers).toList();
+        currNode.requestHandlers.addAll(Arrays.stream(requestHandlers).toList());
+    }
+
+    void addGlobalRoute(String path, RequestHandler ...requestHandlers) {
+        String[] parts = path.split("/");
+        TrieNode currNode = root;
+
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
+
+            currNode.children.putIfAbsent(part, new TrieNode());
+            currNode = currNode.children.get(part);
+        }
+
+        currNode.globalRequestHandlers.addAll(Arrays.stream(requestHandlers).toList());
     }
 
     void handleRequest(String path, Request request, Response response) throws PathNotFoundException, HttpException {
@@ -51,6 +67,17 @@ class Router {
         for (String part : parts) {
             if (part.isEmpty()) {
                 continue;
+            }
+
+            // 현재 경로에 global request handler가 있으면
+            for (RequestHandler requestHandler : currNode.globalRequestHandlers) {
+                NextHandler nextHandler = new NextHandler();
+
+                requestHandler.execute(request, response, nextHandler);
+
+                if (!nextHandler.isCalled()) {
+                    return;
+                }
             }
 
             // 지정된 경로가 있으면
