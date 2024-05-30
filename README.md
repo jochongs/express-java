@@ -1,3 +1,19 @@
-#  Java Socket
+#  Express.java
 
-Java 언어로 소켓 구현하기
+Socket class를 이용하여 Express를 구현하였습니다.
+
+```java
+import server.Server;
+
+public static void main(String[] args) {
+    Server server = new Server();
+
+    server.post("/user", ((request, response, nextHandler) -> {
+        response.status(201).send("signup success");
+    }));
+
+    server.listen(80);
+}
+```
+
+Express와 비슷한 사용감을 가질 수 있도록 구현하였습니다. 
