@@ -96,8 +96,8 @@ class Router {
             throw new PathNotFoundException("Cannot find path");
         }
 
-        if (currNode.requestHandlers.size() == 0) {
-            throw new PathNotFoundException("Cannot find path");
+        if (currNode.requestHandlers.isEmpty()) {
+            throw new PathNotFoundException("Cannot find path.");
         }
 
         request.setParams(params);

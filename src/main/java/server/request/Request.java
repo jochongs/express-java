@@ -1,6 +1,9 @@
 package server.request;
 
 import server.HttpMethod;
+import server.exception.BadRequestException;
+import server.exception.HttpException;
+import server.pipe.Pipe;
 
 import java.util.HashMap;
 
@@ -86,5 +89,23 @@ public class Request {
 
     public HashMap<String, String> params() {
         return params;
+    }
+
+    public String params(String key) {
+        if (!params.containsKey(key)) {
+            return null;
+        }
+
+        return params.get(key);
+    }
+
+    public <T> T params(String key, Class <? extends Pipe<T>> pipeClass) throws HttpException {
+        try {
+            Pipe<T> pipe = pipeClass.getDeclaredConstructor().newInstance();
+
+            return pipe.run(params, key);
+        } catch (Exception exception) {
+            throw new BadRequestException("Cannot parse key: " + key);
+        }
     }
 }

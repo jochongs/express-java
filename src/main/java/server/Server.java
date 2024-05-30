@@ -126,12 +126,7 @@ public class Server {
     private void addRoutes(HttpMethod method, String path, RequestHandler ...requestHandler) {
         Router router;
 
-        if (!routers.containsKey(method)) {
-            router = new Router();
-            routers.put(method, router);
-        } else {
-            router = routers.get(method);
-        }
+        router = routers.get(method);
 
         router.addRoute(path, requestHandler);
     }
