@@ -52,16 +52,16 @@ public class Server {
         }
     }
 
+    public void get(String path, RequestHandler requestHandler) {
+        addRoutes(HttpMethod.GET, path, requestHandler);
+    }
+
     private Router getRouter(HttpMethod httpMethod) {
         if (!routers.containsKey(httpMethod)) {
             routers.put(httpMethod, new Router());
         }
 
         return routers.get(httpMethod);
-    }
-
-    public void get(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.GET, path, requestHandler);
     }
 
     public void post(String path, RequestHandler requestHandler) {
