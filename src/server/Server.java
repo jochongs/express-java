@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class Server {
     private ServerSocket serverSocket;
@@ -139,6 +140,22 @@ public class Server {
 
             return null;
         }
+    }
+
+    private boolean isValidHttpLine(String methodLine) {
+        Pattern METHOD_LINE_PATTERN = Pattern.compile("^(GET|POST|PUT|DELETE|HEAD|OPTIONS|PATCH|TRACE|CONNECT)\\\\s+\\\\S+\\\\s+HTTP/\\\\d\\\\.\\\\d$");
+
+        if (methodLine == null) {
+            return false;
+        }
+
+        if (methodLine.isEmpty()) {
+            return false;
+        }
+
+        return METHOD_LINE_PATTERN.matcher(methodLine).matches();
+
+        return true;
     }
 
     private void initSocket(int port) {
