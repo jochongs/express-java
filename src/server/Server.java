@@ -10,6 +10,12 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+class InvalidHttpRequestException extends Exception {
+    InvalidHttpRequestException(String message) {
+        super(message);
+    }
+}
+
 public class Server {
     private ServerSocket serverSocket;
     private final HashMap<HttpMethod, Router> routers;
@@ -21,9 +27,10 @@ public class Server {
     public void listen(int port) {
         initSocket(port);
 
-        while(true) {
+        while (true) {
+            Socket socket = null;
             try {
-                Socket socket = serverSocket.accept();
+                socket = serverSocket.accept();
 
                 Request request = createRequest(socket);
                 Response response = new Response(socket);
@@ -41,13 +48,15 @@ public class Server {
 
                 try {
                     router.handleRequest(request.path(), request, response);
-                } catch(PathNotFoundException exception) {
+                } catch (PathNotFoundException exception) {
                     response.status(404).send("Cannot find path");
                 }
 
                 // Close the socket
-                socket.close();
-            } catch(IOException exception) {
+                closeSocket(socket);
+            } catch (InvalidHttpRequestException exception) {
+                closeSocket(socket);
+            } catch (IOException exception) {
                 exception.printStackTrace();
             }
         }
@@ -73,6 +82,27 @@ public class Server {
         addRoutes(HttpMethod.PATCH, path, requestHandler);
     }
 
+    private void closeSocket(Socket socket) {
+        if (socket == null) {
+            return;
+        }
+
+        int tryCount = 0;
+        try {
+            while (tryCount < 3) {
+                wait(1000);
+                try {
+                    socket.close();
+                } catch (IOException exception) {
+                    tryCount++;
+                    continue;
+                }
+            }
+        } catch (InterruptedException exception) {
+            return;
+        }
+    }
+
     private Router getRouter(HttpMethod httpMethod) {
         if (!routers.containsKey(httpMethod)) {
             routers.put(httpMethod, new Router());
@@ -94,7 +124,7 @@ public class Server {
         router.addRoute(path, requestHandler);
     }
 
-    private Request createRequest(Socket socket) {
+    private Request createRequest(Socket socket) throws InvalidHttpRequestException {
         try {
             InputStream inputStream = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -103,12 +133,8 @@ public class Server {
             // Method Line
             String methodLine = bufferedReader.readLine();
 
-            if (methodLine == null) {
-                return null;
-            }
-
-            if (methodLine.isEmpty()) {
-                return null;
+            if (isValidHttpLine(methodLine)) {
+                throw new InvalidHttpRequest("Invalid Http Request");
             }
 
             // Header Line
@@ -154,8 +180,6 @@ public class Server {
         }
 
         return METHOD_LINE_PATTERN.matcher(methodLine).matches();
-
-        return true;
     }
 
     private void initSocket(int port) {
