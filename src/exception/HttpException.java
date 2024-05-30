@@ -1,6 +1,6 @@
 package exception;
 
-public class HttpException {
+public class HttpException extends Exception {
     public int status;
     public String message;
 
