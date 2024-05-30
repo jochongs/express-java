@@ -56,14 +56,6 @@ public class Server {
         addRoutes(HttpMethod.GET, path, requestHandler);
     }
 
-    private Router getRouter(HttpMethod httpMethod) {
-        if (!routers.containsKey(httpMethod)) {
-            routers.put(httpMethod, new Router());
-        }
-
-        return routers.get(httpMethod);
-    }
-
     public void post(String path, RequestHandler requestHandler) {
         addRoutes(HttpMethod.POST, path, requestHandler);
     }
@@ -78,6 +70,14 @@ public class Server {
 
     public void patch(String path, RequestHandler requestHandler) {
         addRoutes(HttpMethod.PATCH, path, requestHandler);
+    }
+
+    private Router getRouter(HttpMethod httpMethod) {
+        if (!routers.containsKey(httpMethod)) {
+            routers.put(httpMethod, new Router());
+        }
+
+        return routers.get(httpMethod);
     }
 
     private void addRoutes(HttpMethod method, String path, RequestHandler requestHandler) {
