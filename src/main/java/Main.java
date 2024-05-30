@@ -1,4 +1,3 @@
-import exception.NotFoundException;
 import server.Server;
 
 import java.util.HashMap;
@@ -10,18 +9,19 @@ public class Main {
         server.use("/user", (req, res, nextHandler) -> {
             System.out.println("안녕하세요");
 
+            if (req.header().contentType == "application/json") {
+            }
+
             nextHandler.next();
         });
 
         server.get("/", (request, response, nextHandler) -> {
             String body = request.body();
-            HashMap<String, String> params = request.params();
             String query = request.query();
 
             System.out.println("Body");
             System.out.println(body);
             System.out.println("Params");
-            System.out.println(params);
             System.out.println("query");
             System.out.println(query);
 

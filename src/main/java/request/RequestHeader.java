@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RequestHeader {
-    String authorization;
-    String cookie;
-    String host;
-    String origin;
-    String contentType;
-    String contentLength;
-    String userAgent;
-    String accept;
+    public String authorization;
+    public String cookie;
+    public String host;
+    public String origin;
+    public String contentType;
+    public String contentLength;
+    public String userAgent;
+    public String accept;
 
     private RequestHeader (
             String authorization,
