@@ -24,9 +24,7 @@ public class Server {
         initSocket(port);
 
         while (true) {
-            Socket socket = null;
-            try {
-                socket = serverSocket.accept();
+            try (Socket socket = serverSocket.accept()){
 
                 Request request = createRequest(socket);
                 Response response = new Response(socket);
@@ -55,7 +53,7 @@ public class Server {
                 // Close the socket
                 closeSocket(socket);
             } catch (IOException exception) {
-                closeSocket(socket);
+                exception.printStackTrace();
             }
         }
     }
