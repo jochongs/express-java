@@ -144,11 +144,6 @@ public class Server {
                 bodyBuilder.append((char) bufferedReader.read());
             }
 
-            System.out.println("==========================");
-            System.out.println(methodLine);
-            System.out.println(headerLines);
-            System.out.println(bodyBuilder);
-
             return new Request(
                     new RawRequest(
                             methodLine,
