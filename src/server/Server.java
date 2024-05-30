@@ -1,5 +1,6 @@
 package server;
 
+import exception.HttpException;
 import request.RawRequest;
 import request.Request;
 import response.Response;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 public class Server {
     private ServerSocket serverSocket;
     private final HashMap<HttpMethod, Router> routers;
+    private ExceptionHandler exceptionHandler;
 
     public Server() {
         routers = new HashMap<>();
@@ -22,9 +24,7 @@ public class Server {
         initSocket(port);
 
         while (true) {
-            Socket socket = null;
-            try {
-                socket = serverSocket.accept();
+            try (Socket socket = serverSocket.accept()){
 
                 Request request = createRequest(socket);
                 Response response = new Response(socket);
@@ -41,14 +41,25 @@ public class Server {
                     router.handleRequest(request.path(), request, response);
                 } catch (PathNotFoundException exception) {
                     response.status(404).send("Cannot find path");
+                } catch (HttpException exception) {
+                    if (exceptionHandler == null) {
+                        System.out.println("Cannot find Error Exception Middleware");
+                        System.exit(1);
+                    }
+
+                    exceptionHandler.handleException(exception, request, response);
                 }
 
                 // Close the socket
                 closeSocket(socket);
             } catch (IOException exception) {
-                closeSocket(socket);
+                exception.printStackTrace();
             }
         }
+    }
+
+    public void use(ExceptionHandler exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
     }
 
     public void get(String path, RequestHandler ...requestHandlers) {

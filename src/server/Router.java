@@ -1,5 +1,6 @@
 package server;
 
+import exception.HttpException;
 import request.Request;
 import response.Response;
 
@@ -41,7 +42,7 @@ class Router {
         currNode.requestHandlers = Arrays.stream(requestHandlers).toList();
     }
 
-    void handleRequest(String path, Request request, Response response) throws PathNotFoundException {
+    void handleRequest(String path, Request request, Response response) throws PathNotFoundException, HttpException {
         String[] parts = path.split("/");
         HashMap<String, String> params = new HashMap<>();
 
@@ -73,6 +74,7 @@ class Router {
         }
 
         request.setParams(params);
+
         for (RequestHandler requestHandler : currNode.requestHandlers) {
             NextHandler nextHandler = new NextHandler();
 
@@ -84,7 +86,5 @@ class Router {
 
             break;
         }
-
-        //currNode.requestHandler.execute(request, response);
     }
 }

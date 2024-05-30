@@ -1,3 +1,4 @@
+import exception.NotFoundException;
 import server.Server;
 
 import java.util.HashMap;
@@ -30,11 +31,21 @@ public class Main {
 
             System.out.println(params);
 
+            if (true) {
+                throw new NotFoundException("Cannot find user");
+            }
+
             //nextHandler.next();
             response.status(200).send("success");
         }, (req, res, nextHandler) -> {
             res.send("미들웨어성공");
         });
+
+        server.use(((exception, req, res) -> {
+            System.out.println("예외 발생");
+
+            res.status(exception.status).send(exception.message);
+        }));
 
         server.listen(80);
     }
