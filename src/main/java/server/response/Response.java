@@ -1,5 +1,7 @@
 package server.response;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -9,6 +11,7 @@ public class Response {
     private String contentType;
     private String body;
     private final Socket socket;
+    static private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Response(Socket socket) {
         this.socket = socket;
@@ -25,6 +28,22 @@ public class Response {
             outputStream.write(bytes);
             outputStream.flush();
         } catch(IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void send(Object object) {
+        try {
+            OutputStream outputStream = socket.getOutputStream();
+
+            body = objectMapper.writeValueAsString(object);
+            contentType = "application/json";
+
+            byte[] bytes = this.toString().getBytes("UTF-8");
+
+            outputStream.write(bytes);
+            outputStream.flush();
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
     }

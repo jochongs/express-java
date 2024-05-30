@@ -5,19 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55654ab4-eca3-4c41-ace3-67331903884a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/app/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/app/user/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/app/user/UserRouter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/server/pipe/ParseIntPipe.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/server/pipe/Pipe.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Router.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Router.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/server/request/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/request/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/user/UserRouter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/user/UserRouter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/server/response/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/server/response/Response.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +131,7 @@
       <workItem from="1717055489639" duration="150000" />
       <workItem from="1717055646179" duration="146000" />
       <workItem from="1717055799030" duration="14000" />
-      <workItem from="1717055819893" duration="5375000" />
+      <workItem from="1717055819893" duration="5717000" />
     </task>
     <servers />
   </component>

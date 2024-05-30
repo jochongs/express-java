@@ -19,13 +19,14 @@ public class UserRouter {
                 throw new NotFoundException("Cannot find user : " + userIdx);
             }
 
-            res.status(200).send("success");
+            res.status(200).send(users.get(userIdx));
         });
 
         App.server.post("/user", (req, res, next) -> {
             User user = User.of(req.body());
-
+            user.idx = lastId;
             users.put(lastId, user);
+
             lastId++;
 
             res.status(200).send("sign up success");
