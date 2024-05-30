@@ -57,5 +57,17 @@ public class UserRouter {
 
             res.status(200).send("update success");
         });
+
+        App.server.delete("/user/:idx", (req, res, next) -> {
+            int userIdx = req.params("idx", ParseIntPipe.class);
+
+            if(!users.containsKey(userIdx)) {
+                throw new NotFoundException("Cannot find user : " + userIdx);
+            }
+
+            users.remove(userIdx);
+
+            res.status(200).send("Update success");
+        });
     }
 }
