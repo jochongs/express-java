@@ -84,7 +84,5 @@ class Router {
 
             break;
         }
-
-        //currNode.requestHandler.execute(request, response);
     }
 }
