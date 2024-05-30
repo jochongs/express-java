@@ -51,24 +51,24 @@ public class Server {
         }
     }
 
-    public void get(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.GET, path, requestHandler);
+    public void get(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.GET, path, requestHandlers);
     }
 
-    public void post(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.POST, path, requestHandler);
+    public void post(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.POST, path, requestHandlers);
     }
 
-    public void put(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.PUT, path, requestHandler);
+    public void put(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.PUT, path, requestHandlers);
     }
 
-    public void delete(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.DELETE, path, requestHandler);
+    public void delete(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.DELETE, path, requestHandlers);
     }
 
-    public void patch(String path, RequestHandler requestHandler) {
-        addRoutes(HttpMethod.PATCH, path, requestHandler);
+    public void patch(String path, RequestHandler ...requestHandlers) {
+        addRoutes(HttpMethod.PATCH, path, requestHandlers);
     }
 
     private void closeSocket(Socket socket) {
@@ -101,7 +101,7 @@ public class Server {
         return routers.get(httpMethod);
     }
 
-    private void addRoutes(HttpMethod method, String path, RequestHandler requestHandler) {
+    private void addRoutes(HttpMethod method, String path, RequestHandler ...requestHandler) {
         Router router;
 
         if (!routers.containsKey(method)) {
@@ -143,6 +143,11 @@ public class Server {
             while (bufferedReader.ready()) {
                 bodyBuilder.append((char) bufferedReader.read());
             }
+
+            System.out.println("==========================");
+            System.out.println(methodLine);
+            System.out.println(headerLines);
+            System.out.println(bodyBuilder);
 
             return new Request(
                     new RawRequest(

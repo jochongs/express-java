@@ -5,5 +5,5 @@ import response.Response;
 
 @FunctionalInterface
 public interface RequestHandler {
-    void execute(Request request, Response response);
+    void execute(Request request, Response response, NextHandler next);
 }

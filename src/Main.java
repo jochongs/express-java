@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Server server = new Server();
 
-        server.get("/", (request, response) -> {
+        server.get("/", (request, response, nextHandler) -> {
             String body = request.body();
             HashMap<String, String> params = request.params();
             String query = request.query();
@@ -21,17 +21,20 @@ public class Main {
             response.status(201).send("success");
         });
 
-        server.post("/user", ((request, response) -> {
+        server.post("/user", ((request, response, nextHandler) -> {
             response.status(201).send("signup success");
         }));
 
-        server.get("/user/:idx", (request, response) -> {
+        server.get("/user/:idx", (request, response, nextHandler) -> {
             HashMap<String, String> params = request.params();
 
             System.out.println(params);
 
+            //nextHandler.next();
             response.status(200).send("success");
-        } );
+        }, (req, res, nextHandler) -> {
+            res.send("미들웨어성공");
+        });
 
         server.listen(80);
     }
