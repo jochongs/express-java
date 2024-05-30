@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import server.exception.NotFoundException;
 import server.pipe.ParseIntPipe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserRouter {
@@ -12,6 +13,16 @@ public class UserRouter {
     static private final HashMap<Integer, User> users = new HashMap<Integer, User>();
 
     static public void register() {
+        App.server.get("/user/all", (req, res, nextHandler) -> {
+            ArrayList<User> userList = new ArrayList<>();
+
+            for (int key : users.keySet()) {
+                userList.add(users.get(key));
+            }
+
+            res.status(200).send(userList);
+        });
+
         App.server.get("/user/:idx", (req, res, nextHandler) -> {
             int userIdx = req.params("idx", ParseIntPipe.class);
 
